@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,7 +26,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import tn.cyn.dao.AppUserRepository;
 import tn.cyn.entities.AppUser;
-
+@CrossOrigin
 @RestController
 public class HomeRestController {
 
@@ -61,6 +62,7 @@ public class HomeRestController {
 		String password = apUser.getPassword();
 		String token = null;
 		AppUser appUser = appUserRepository.findOneByUsername(username);
+		//response.setHeader("Access-Control-Expose-Headers" ,"Authorization");
 		// System.out.println(appUser + "aaa");
 		Map<String, Object> tokenMap = new HashMap<String, Object>();
 		if (appUser != null && appUser.getPassword().equals(password)) {

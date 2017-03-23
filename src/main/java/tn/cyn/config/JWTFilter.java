@@ -31,7 +31,13 @@ public class JWTFilter extends GenericFilterBean {
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
 			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
+		HttpServletResponse response = (HttpServletResponse) res;
+		response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Expose-Headers" ,"Authorization");
 		String authHeader = request.getHeader(AUTHORIZATION_HEADER);
+		response.setHeader("Access-Control-Allow-Headers",
+				"Origin, X-Requested-With, ,Content-Type, Accept, Access-Control-Allow-Headers, Authorization," + authHeader);
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 			((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Authorization header.");
 		} else {

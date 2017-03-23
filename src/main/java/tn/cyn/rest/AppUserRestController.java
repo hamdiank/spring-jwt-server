@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tn.cyn.dao.AppUserRepository;
 import tn.cyn.entities.AppUser;
-
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/api")
 public class AppUserRestController {
@@ -29,7 +29,7 @@ public class AppUserRestController {
 	 * 
 	 * @return list of all AppUser
 	 */
-	@CrossOrigin
+	
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public List<AppUser> users() {
 		return appUserRepository.findAll();
