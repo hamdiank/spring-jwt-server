@@ -38,6 +38,12 @@ public class JWTFilter extends GenericFilterBean {
 		String authHeader = request.getHeader(AUTHORIZATION_HEADER);
 		response.setHeader("Access-Control-Allow-Headers",
 				"Origin, X-Requested-With, ,Content-Type, Accept, Access-Control-Allow-Headers, Authorization," + authHeader);
+		if ("OPTIONS".equals(request.getMethod())) {
+			response.setStatus(HttpServletResponse.SC_OK);
+
+			filterChain.doFilter(req, res);
+		} else {
+		
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 			((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Authorization header.");
 		} else {
@@ -68,7 +74,7 @@ public class JWTFilter extends GenericFilterBean {
 			} catch (SignatureException e) {
 				((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
 			}
-
+		}
 		}
 	}
 
