@@ -34,47 +34,34 @@ public class JWTFilter extends GenericFilterBean {
 		HttpServletResponse response = (HttpServletResponse) res;
 		response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
 		response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setHeader("Access-Control-Expose-Headers" ,"Authorization");
-		String authHeader = request.getHeader(AUTHORIZATION_HEADER);
+		response.setHeader("Access-Control-Expose-Headers", "Authorization");
 		response.setHeader("Access-Control-Allow-Headers",
-				"Origin, X-Requested-With, ,Content-Type, Accept, Access-Control-Allow-Headers, Authorization," + authHeader);
+				"X-Requested-With, ,Content-Type, Accept, Access-Control-Allow-Headers, Authorization");
+		String authHeader = request.getHeader(AUTHORIZATION_HEADER);
+		//System.out.println("afeetbet " + authHeader);
+		//System.out.println("rdgg : " + request.getHeader("Access-Control-Expose-Header"));
+		
 		if ("OPTIONS".equals(request.getMethod())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 
 			filterChain.doFilter(req, res);
 		} else {
-		
-		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-			((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Authorization header.");
-		} else {
-			try {
-				String token = authHeader.substring(7);
-/*
-				// HttpServletResponse response = (HttpServletResponse) res;
-				// response.setHeader("Access-Control-Allow-Methods", "POST,
-				// GET"); // also added header to allow POST, GET method to be
-				// available
-				// response.setHeader("Access-Control-Allow-Origin", "*"); //
-				// also added header to allow cross domain request for any
-				// domain
-				
-				// ---------------------------------------------------------------//
-				HttpServletResponse response = (HttpServletResponse) res;
-				response.setHeader("Access-Control-Allow-Origin", "*");
-				response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
-				response.setHeader("Access-Control-Max-Age", "3600");
-				response.setHeader("Access-Control-Allow-Headers",
-						"Origin, X-Requested-With, Content-Type, Accept, " + authHeader);
-				// ---------------------------------------------------------------//
-				*/
-				Claims claims = Jwts.parser().setSigningKey("secretkey").parseClaimsJws(token).getBody();
-				request.setAttribute("claims", claims);
-				SecurityContextHolder.getContext().setAuthentication(getAuthentication(claims));
-				filterChain.doFilter(req, res);
-			} catch (SignatureException e) {
-				((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+
+			if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+				((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED,
+						"Invalid Authorization header.");
+			} else {
+				try {
+					String token = authHeader.substring(7);
+
+					Claims claims = Jwts.parser().setSigningKey("secretkey").parseClaimsJws(token).getBody();
+					request.setAttribute("claims", claims);
+					SecurityContextHolder.getContext().setAuthentication(getAuthentication(claims));
+					filterChain.doFilter(req, res);
+				} catch (SignatureException e) {
+					((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+				}
 			}
-		}
 		}
 	}
 
